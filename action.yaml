@@ -158,3 +158,5 @@ runs:
         OWNER: ${{ github.repository_owner }}
         REPO: ${{ github.event.repository.name }}
         PULL_REQUEST_NODE_ID: ${{ github.event.pull_request.node_id }}
+        coverage_filename : ${{ inputs.coverage_filename }}
+
