@@ -54,18 +54,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - if: github.event_name == 'pull_request' && inputs.diff_enabled == 'true'
-      run: |
-        git fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin ${GITHUB_BASE_REF}
-        git diff -U0 --no-color origin/${GITHUB_BASE_REF} > patch.diff
-      shell: bash
-    - if: github.event_name == 'pull_request' && inputs.prev_coverage_mode == 'git-notes'
-      run: |
-        git fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin ${GITHUB_BASE_REF} +refs/notes/coverage:refs/notes/coverage || true
-        git notes --ref coverage show origin/${GITHUB_BASE_REF} > ${previous_coverage_filename} || rm ${previous_coverage_filename}
-      shell: bash
-      env:
-        previous_coverage_filename : ${{ inputs.previous_coverage_filename }}
     - if: github.event_name == 'pull_request'
       run: |
         patch_tmpl=$(cat <<EOF
@@ -162,14 +150,3 @@ runs:
         OWNER: ${{ github.repository_owner }}
         REPO: ${{ github.event.repository.name }}
         PULL_REQUEST_NODE_ID: ${{ github.event.pull_request.node_id }}
-    - name: Save Coverage
-      if: github.event_name == 'push' && inputs.prev_coverage_mode == 'git-notes'
-      run: |
-        git fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin ${GITHUB_BASE_REF} +refs/notes/coverage:refs/notes/coverage || true
-        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        git notes --ref coverage add -f -F ${coverage_filename} origin/${GITHUB_REF_NAME}
-        git push origin refs/notes/coverage
-      shell: bash
-      env:
-        coverage_filename : ${{ inputs.coverage_filename }}
