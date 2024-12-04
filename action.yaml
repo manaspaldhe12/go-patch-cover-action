@@ -62,6 +62,8 @@ runs:
       run: |
         patch_tmpl=$(cat <<EOF
         <!-- go-patch-cover/report -->
+        <!-- COVERAGE_FILENAME: $coverage_filename -->
+
         <img src="https://badges.seriousben.com/badge?label=Patch%20Coverage&description={{printf "%.1f" .PatchCoverage}}%25" />
 
         <table>
