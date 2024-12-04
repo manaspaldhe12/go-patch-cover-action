@@ -54,6 +54,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - if: github.event_name == 'pull_request' && inputs.diff_enabled == 'true'
+      run: |
+        git fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin ${GITHUB_BASE_REF}
+        git diff -U0 --no-color origin/${GITHUB_BASE_REF} > patch.diff
+      shell: bash
     - if: github.event_name == 'pull_request'
       run: |
         patch_tmpl=$(cat <<EOF
