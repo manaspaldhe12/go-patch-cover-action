@@ -113,8 +113,6 @@ runs:
         comment_body=$(cat <<EOF
         <!-- go-patch-cover/report -->
                 
-        COVERAGE_FILENAME: ${coverage_filename}
-
         $GO_PATCH_COVER_OUT
         EOF
         )
